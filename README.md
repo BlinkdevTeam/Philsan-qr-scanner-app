@@ -1,0 +1,1 @@
+# Philsan-qr-scanner-app
