@@ -9,12 +9,13 @@ import Scanner from './Components/Scanner';
 import Loader from './Components/Loader';
 import Header from './Components/Header';
 import Footer from './Components/Footer';
+import Canceled from './Components/Canceled'
 
 export default function App() {
   const [screen, setScreen] = useState("home");
   const [isLoading, setIsLoading] = useState(false);
   const [scannedUser, setScannedUser] = useState(null);
-  const [successMessage, setSuccessMessage] = useState("in");
+  const [messageFrom, setMessageFrom] = useState("in");
 
   const handleScreen = (e) => {
         
@@ -23,7 +24,7 @@ export default function App() {
             setIsLoading(false);
             setScreen(e.trigger);
             setScannedUser(e.scannedUser);
-            setSuccessMessage(e.successMessage)
+            setMessageFrom(e.messageFrom)
         }, 1000);
     };
 
@@ -44,9 +45,11 @@ export default function App() {
       case "out":
         return renderContent(<Scanner screen={screen} onClick={handleScreen}/>);
       case "success" :
-        return renderContent(<Success scannedUser={scannedUser} successMessage={successMessage} onClick={handleScreen}/>);
+        return renderContent(<Success scannedUser={scannedUser} messageFrom={messageFrom} onClick={handleScreen}/>);
       case "failed":
         return renderContent(<Failed/>);
+      case "canceled":
+        return renderContent(<Canceled scannedUser={scannedUser} messageFrom={messageFrom} onClick={handleScreen}/>);
       case "home":
         return <LandingPage/>;
       default:

@@ -5,7 +5,7 @@ import ConventionLogo from '../assets/philsan-38th.png'
 export default function Failed() {
     return (
         <View style={styles.container}>
-            <Text style={{textAlign: 'center', color: 'red'}}>Scan Failed</Text>
+            <Text style={{textAlign: 'center', color: 'red'}}>Scan Failed,</Text>
         </View>
     )
 }

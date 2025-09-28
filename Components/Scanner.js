@@ -30,9 +30,6 @@ export default function Scanner({screen, onClick}) {
         setScanned(true);
         
         const currentTime = new Date().toISOString();
-        const updateData = screen === 'in' ? { time_in: currentTime } : { time_out: currentTime };
-
-        console.log("Scanned QR data:", data);
 
         const { data: user, error } = await supabase
             .from('philsan_registration_2025')
@@ -47,34 +44,34 @@ export default function Scanner({screen, onClick}) {
             setScanned(false);
             return;
         } else {
-          onClick({ 
-            trigger: "success",
-            scannedUser: user.first_name+" "+user.last_name,
-            successMessage: screen === "in" ? "in" : "out"
+          if(user.reg_status === "approved") {
+            updateTime(user.email, currentTime, screen)            
+            onClick({ 
+                trigger: "success",
+                scannedUser: user.first_name+" "+user.last_name,
+                messageFrom: screen === "in" ? "in" : "out"
+            });
+          } else {
+            onClick({ 
+                trigger: "canceled",
+                scannedUser: user.first_name+" "+user.last_name
+            });
           }
-          );
         }
-        
-        // const { error: updateError } = await supabase
-        //     .from('medical_professionals')
-        //     .update(updateData)
-        //     .eq('email_address', data);
-
-        // if (updateError) {
-        //     onClick({ trigger: screen === "in" ? "timeinFailed" : "timeoutFailed", error: "failedLogin" });
-        //     console.error("Update error:", updateError);
-        // } else {
-        //     onClick({
-        //         trigger: screen === "in" ? "timeinSuccess" : "timeoutSuccess",
-        //         firstName: user.first_name,
-        //         isLogin: screen === 'in',
-        //     });
-        // }
-
-        // setTimeout(() => setScanned(false), 3000);
     };
 
-     if (hasPermission === null) {
+    const updateTime = async (email, time, screen) => {
+        const updateData = screen === 'in' ? { time_in: time } : { time_out: time };
+        const { data: result, error } = await supabase
+                .from('philsan_registration_2025')
+                .update(updateData)
+                .eq('email', email)
+                .select()
+        if (error) throw error
+        return result
+    }
+
+    if (hasPermission === null) {
         return (
             <View style={styles.container}>
                 <ActivityIndicator size="large" color="#00e47c" />
